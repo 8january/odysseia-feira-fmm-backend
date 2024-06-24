@@ -1,50 +1,55 @@
 import express from "express";
-import cors from "cors";
-import { createServer } from "http";
-import { Server } from "socket.io";
-import { format } from 'date-fns';
-
-interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
-}
-
-interface ClientToServerEvents {
-  hello: () => void;
-}
-
-interface InterServerEvents {
-  ping: () => void;
-}
-
-interface SocketData {
-  name: string;
-  age: number;
-}
+import connectDB from "./config/db.config";
+import UserModel from "./schemas/user";
+import cors from 'cors'
 
 const app = express();
-
-// Express CORS setup
 app.use(cors({
-  origin: "*",
-}));
-const httpServer = createServer(app);
+  origin: 'https://5173-idx-odyssseia-feira-fmm-1719166910478.cluster-4xpux6pqdzhrktbhjf2cumyqtg.cloudworkstations.dev',
+  credentials: true
+}))
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+const port = process.env.PORT || 5000;
 
-// Socket.IO setup with CORS
-const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer);
-io.on("connection", (socket) => {
-  console.log("New client: ", socket.id);
-});
+app.get('/', (req, res) => {
+  console.log("url:/")
+  res.send("api running!");
+})
 
-io.engine.on("connection_error", (err) => {
-  console.log(err.req);      // the request object
-  console.log(err.code);     // the error code, for example 1
-  console.log(err.message);  // the error message, for example "Session ID unknown"
-  console.log(err.context);  // some additional error context
-});
+app.post('/user', async (req, res) => {
+  console.log('url:/user')
+  try {
+    const newUser = new UserModel(req.body);
+    await newUser.save();
+    res.status(201).json({ message: "User created successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating user" });
+  }
 
-const port = 3099;
-httpServer.listen(port, () => {
-  console.log(`Running at ${port}\n${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}`);
-});
+})
+
+app.get('/rank', async (req, res) => {
+  console.log('/rank')
+  try {
+    const users = await UserModel.find().sort({ time: 1, correctAnswers: -1 });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting users" });
+  }
+})
+
+
+const startDB = async () => {
+  try {
+    await connectDB("mongodb+srv://leonardobrandaoamarante:FeiraFMM@feira-fmm.x9idtqa.mongodb.net/?retryWrites=true&w=majority&appName=feira-fmm");
+    console.log('Mongodb is connected!!!')
+    app.listen(port, () => {
+      console.log(`Server is listening on port ${port}...`);
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+startDB();

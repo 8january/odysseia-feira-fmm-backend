@@ -13,9 +13,11 @@
   "author": "Google LLC",
   "license": "Apache-2.0",
   "dependencies": {
+    "@types/mongoose": "^5.11.97",
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "express": "^4.19.2",
+    "mongoose": "^8.4.3",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
