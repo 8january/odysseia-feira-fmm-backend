@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "CommonJS",
+    "lib": [
+      "ESNext"
+    ],
+    "module": "ES2020",
+    "moduleResolution": "Node",
     "sourceMap": true,
     "outDir": "dist",
     "esModuleInterop": true
