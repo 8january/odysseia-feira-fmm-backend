@@ -18,7 +18,7 @@ const user_1 = __importDefault(require("./schemas/user"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: 'https://9000-idx-odyssseia-feira-fmm-1719166910478.cluster-4xpux6pqdzhrktbhjf2cumyqtg.cloudworkstations.dev',
+    origin: 'https://localhost:5173',
     credentials: true, // Permite cookies e credenciais
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Permite esses métodos
     allowedHeaders: ["Content-Type", "Authorization"], // Permite esses cabeçalhos
@@ -31,10 +31,11 @@ app.get('/', (req, res) => {
     console.log("GET /");
     res.send("api running!");
 });
-app.post('/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('POST /user');
     try {
-        const newUser = new user_1.default(req.body);
+        console.log(req.query.data);
+        const newUser = new user_1.default(req.query.data);
         yield newUser.save();
         res.status(201).json({ message: "User created successfully" });
     }

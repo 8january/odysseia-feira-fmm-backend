@@ -5,7 +5,7 @@ import cors from 'cors'
 
 const app = express();
 app.use(cors({
-  origin: 'https://9000-idx-odyssseia-feira-fmm-1719166910478.cluster-4xpux6pqdzhrktbhjf2cumyqtg.cloudworkstations.dev',
+  origin: 'https://localhost:5173',
   credentials: true, // Permite cookies e credenciais
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Permite esses métodos
   allowedHeaders: ["Content-Type", "Authorization"], // Permite esses cabeçalhos
@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
 app.post('/user', async (req, res) => {
   console.log('POST /user');
   try {
+    console.log(req.body)
     const newUser = new UserModel(req.body);
     await newUser.save();
     res.status(201).json({ message: "User created successfully" });
