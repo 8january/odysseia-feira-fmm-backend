@@ -27,7 +27,7 @@ app.post('/user', async (req, res) => {
     console.log(req.body)
     const newUser = new UserModel(req.body);
     await newUser.save();
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({ message: "User created successfully", id: newUser._id });
   } catch (error) {
     res.status(500).json({ message: "Error creating user" });
   }
