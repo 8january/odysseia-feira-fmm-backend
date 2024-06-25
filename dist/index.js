@@ -18,18 +18,21 @@ const user_1 = __importDefault(require("./schemas/user"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: 'https://5173-idx-odyssseia-feira-fmm-1719166910478.cluster-4xpux6pqdzhrktbhjf2cumyqtg.cloudworkstations.dev',
-    credentials: true
+    origin: 'https://9000-idx-odyssseia-feira-fmm-1719166910478.cluster-4xpux6pqdzhrktbhjf2cumyqtg.cloudworkstations.dev',
+    credentials: true, // Permite cookies e credenciais
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Permite esses métodos
+    allowedHeaders: ["Content-Type", "Authorization"], // Permite esses cabeçalhos
 }));
+app.options('*', (0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 const port = process.env.PORT || 5000;
 app.get('/', (req, res) => {
-    console.log("url:/");
+    console.log("GET /");
     res.send("api running!");
 });
 app.post('/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('url:/user');
+    console.log('POST /user');
     try {
         const newUser = new user_1.default(req.body);
         yield newUser.save();
@@ -40,7 +43,7 @@ app.post('/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 app.get('/rank', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('/rank');
+    console.log('POST /rank');
     try {
         const users = yield user_1.default.find().sort({ time: 1, correctAnswers: -1 });
         res.status(200).json(users);

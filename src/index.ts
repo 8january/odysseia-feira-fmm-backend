@@ -5,20 +5,23 @@ import cors from 'cors'
 
 const app = express();
 app.use(cors({
-  origin: 'https://5173-idx-odyssseia-feira-fmm-1719166910478.cluster-4xpux6pqdzhrktbhjf2cumyqtg.cloudworkstations.dev',
-  credentials: true
-}))
+  origin: 'https://9000-idx-odyssseia-feira-fmm-1719166910478.cluster-4xpux6pqdzhrktbhjf2cumyqtg.cloudworkstations.dev',
+  credentials: true, // Permite cookies e credenciais
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Permite esses métodos
+  allowedHeaders: ["Content-Type", "Authorization"], // Permite esses cabeçalhos
+}));
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const port = process.env.PORT || 5000;
 
 app.get('/', (req, res) => {
-  console.log("url:/")
+  console.log("GET /");
   res.send("api running!");
 })
 
 app.post('/user', async (req, res) => {
-  console.log('url:/user')
+  console.log('POST /user');
   try {
     const newUser = new UserModel(req.body);
     await newUser.save();
@@ -30,7 +33,7 @@ app.post('/user', async (req, res) => {
 })
 
 app.get('/rank', async (req, res) => {
-  console.log('/rank')
+  console.log('POST /rank');
   try {
     const users = await UserModel.find().sort({ time: 1, correctAnswers: -1 });
     res.status(200).json(users);
