@@ -2,6 +2,7 @@ import express from "express";
 import connectDB from "./config/db_config.js";
 import UserModel from "./schemas/user.js";
 import cors from 'cors'
+import 'dotenv/config'
 
 const app = express();
 app.use(cors({
@@ -45,7 +46,7 @@ app.get('/rank', async (req, res) => {
 
 const startDB = async () => {
   try {
-    await connectDB("mongodb+srv://leonardobrandaoamarante:FeiraFMM@feira-fmm.x9idtqa.mongodb.net/?retryWrites=true&w=majority&appName=feira-fmm");
+    await connectDB(process.env.MONGODB_URI);
     console.log('Mongodb is connected!!!')
     app.listen(port, () => {
       console.log(`Server is listening on port ${port}...`);

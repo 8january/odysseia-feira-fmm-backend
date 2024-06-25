@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,34 +7,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const db_config_1 = __importDefault(require("./config/db.config"));
-const user_1 = __importDefault(require("./schemas/user"));
-const cors_1 = __importDefault(require("cors"));
-const app = (0, express_1.default)();
-app.use((0, cors_1.default)({
-    origin: 'https://localhost:5173',
+import express from "express";
+import connectDB from "./config/db_config.js";
+import UserModel from "./schemas/user.js";
+import cors from 'cors';
+const app = express();
+app.use(cors({
+    origin: 'https://5173-idx-odysseia-feirafmm-1719276587146.cluster-m7tpz3bmgjgoqrktlvd4ykrc2m.cloudworkstations.dev',
     credentials: true, // Permite cookies e credenciais
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Permite esses métodos
     allowedHeaders: ["Content-Type", "Authorization"], // Permite esses cabeçalhos
 }));
-app.options('*', (0, cors_1.default)());
-app.use(express_1.default.json());
-app.use(express_1.default.urlencoded({ extended: false }));
+app.options('*', cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 const port = process.env.PORT || 5000;
 app.get('/', (req, res) => {
     console.log("GET /");
     res.send("api running!");
 });
-app.get('/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('POST /user');
     try {
-        console.log(req.query.data);
-        const newUser = new user_1.default(req.query.data);
+        console.log(req.body);
+        const newUser = new UserModel(req.body);
         yield newUser.save();
         res.status(201).json({ message: "User created successfully" });
     }
@@ -46,7 +41,7 @@ app.get('/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 app.get('/rank', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('POST /rank');
     try {
-        const users = yield user_1.default.find().sort({ time: 1, correctAnswers: -1 });
+        const users = yield UserModel.find().sort({ time: 1, correctAnswers: -1 });
         res.status(200).json(users);
     }
     catch (error) {
@@ -55,7 +50,7 @@ app.get('/rank', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 const startDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, db_config_1.default)("mongodb+srv://leonardobrandaoamarante:FeiraFMM@feira-fmm.x9idtqa.mongodb.net/?retryWrites=true&w=majority&appName=feira-fmm");
+        yield connectDB("mongodb+srv://leonardobrandaoamarante:FeiraFMM@feira-fmm.x9idtqa.mongodb.net/?retryWrites=true&w=majority&appName=feira-fmm");
         console.log('Mongodb is connected!!!');
         app.listen(port, () => {
             console.log(`Server is listening on port ${port}...`);
