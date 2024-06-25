@@ -6,8 +6,7 @@ import 'dotenv/config'
 
 const app = express();
 app.use(cors({
-  origin: ['https://5173-idx-odysseia-feirafmm-1719276587146.cluster-m7tpz3bmgjgoqrktlvd4ykrc2m.cloudworkstations.dev',
-    "https://odysseia-feirafmm.vercel.app"],
+  origin: "https://odysseia-feirafmm.vercel.app",
   credentials: true, // Permite cookies e credenciais
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Permite esses métodos
   allowedHeaders: ["Content-Type", "Authorization"], // Permite esses cabeçalhos
