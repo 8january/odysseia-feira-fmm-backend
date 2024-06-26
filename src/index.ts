@@ -24,7 +24,7 @@ app.post('/user', async (req, res) => {
   console.log('POST /user');
   try {
     console.log(req.body)
-    const newUser = new UserModel(req.body);
+    const newUser = new UserModel({ ...req.body, score: (req.body.correct * 1000) - req.body.time });
     await newUser.save();
     res.status(201).json({ message: "User created successfully", user: newUser });
   } catch (error) {
@@ -36,19 +36,7 @@ app.post('/user', async (req, res) => {
 app.get('/rank', async (req, res) => {
   console.log('GET /rank');
   try {
-    const users = await UserModel.aggregate([
-      {
-        $addFields: {
-          score: {
-            $subtract: [
-              { $multiply: ["$correctAnswers", 1000] },  // Dá um peso maior às respostas corretas
-              "$time"
-            ]
-          }
-        }
-      },
-      { $sort: { score: -1 } }
-    ]);
+    const users = await UserModel.find().sort({ score: 1 });
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Error getting users" });
